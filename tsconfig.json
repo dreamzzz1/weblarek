@@ -13,14 +13,19 @@
     "moduleDetection": "force",
     "noEmit": true,
 
+    /* Пути для импортов */
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-
+    "noUncheckedSideEffectImports": true
   },
   "include": ["src"]
 }
