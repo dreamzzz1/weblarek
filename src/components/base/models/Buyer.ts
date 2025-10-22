@@ -1,5 +1,5 @@
 // src/components/models/Buyer.ts
-import type { IBuyer, TPayment } from 'C:/Users/mora/Desktop/NewWEBLarek/weblarek/src/types';
+import type { IBuyer, TPayment } from '@/types';
 
 
 export class Buyer {

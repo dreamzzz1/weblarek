@@ -1,5 +1,5 @@
 // src/components/models/Cart.ts
-import type { IProduct } from 'C:/Users/mora/Desktop/NewWEBLarek/weblarek/src/types';
+import type { IProduct } from '@/types';
 
 export class Cart {
   private items: IProduct[] = [];

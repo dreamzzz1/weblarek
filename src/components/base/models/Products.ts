@@ -1,5 +1,5 @@
 // src/components/models/Products.ts
-import type { IProduct, IApiProductsResponse } from 'C:/Users/mora/Desktop/NewWEBLarek/weblarek/src/types';
+import type { IProduct, IApiProductsResponse } from '@/types';
 
 
 export class Products {
