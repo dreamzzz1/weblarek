@@ -1,42 +1,57 @@
-import { IApi, IApiProductsResponse, IOrderPayload } from '../types';
+import type { IApi, IApiProductsResponse, IOrderPayload } from '../types';
+import { API_URL } from '../utils/constants';
 
 export class ApiService implements IApi {
-	constructor(private baseUrl: string, private options: RequestInit = {}) {}
+  constructor(
+    private baseUrl: string = API_URL,
+    private options: RequestInit = {}
+  ) {}
 
-	async get<T>(uri: string): Promise<T> {
-		const response = await fetch(`${this.baseUrl}${uri}`, {
-			...this.options,
-			method: 'GET',
-		});
-		return this.handleResponse<T>(response);
-	}
+  private async request<T>(uri: string, options: RequestInit): Promise<T> {
+    const url = `${this.baseUrl}${uri}`;
+    console.log(`[API] ${options.method || 'GET'}: ${url}`);
 
-	async post<T>(uri: string, data: object, method: 'POST' | 'PUT' | 'DELETE' = 'POST'): Promise<T> {
-		const response = await fetch(`${this.baseUrl}${uri}`, {
-			...this.options,
-			method,
-			body: JSON.stringify(data),
-			headers: {
-				'Content-Type': 'application/json',
-				...this.options.headers,
-			},
-		});
-		return this.handleResponse<T>(response);
-	}
+    try {
+      const response = await fetch(url, {
+        ...this.options,
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.options.headers,
+          ...options.headers,
+        },
+      });
 
-	protected async handleResponse<T>(response: Response): Promise<T> {
-		if (!response.ok) {
-			throw new Error(`Ошибка запроса: ${response.status}`);
-		}
-		return response.json();
-	}
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Ошибка запроса: ${response.status} ${response.statusText}. Ответ: ${text}`);
+      }
 
-	// пример методов для конкретных запросов
-	getProducts(): Promise<IApiProductsResponse> {
-		return this.get('/products');
-	}
+      try {
+        return await response.json();
+      } catch {
+        throw new Error(`Ошибка парсинга JSON: ${url}`);
+      }
+    } catch (error) {
+      throw new Error(`Ошибка сети или запроса: ${(error as Error).message}`);
+    }
+  }
 
-	sendOrder(data: IOrderPayload): Promise<object> {
-		return this.post('/order', data);
-	}
+  public get<T>(uri: string): Promise<T> {
+    return this.request<T>(uri, { method: 'GET' });
+  }
+
+  public post<T>(uri: string, data: object, method: 'POST' | 'PUT' | 'DELETE' = 'POST'): Promise<T> {
+    return this.request<T>(uri, { method, body: JSON.stringify(data) });
+  }
+
+  /** Получение списка товаров */
+  public getProducts(): Promise<IApiProductsResponse> {
+    return this.get<IApiProductsResponse>('/product/');
+  }
+
+  /** Отправка заказа */
+  public sendOrder(data: IOrderPayload): Promise<object> {
+    return this.post<object>('/order', data);
+  }
 }

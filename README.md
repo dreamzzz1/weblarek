@@ -112,13 +112,14 @@ yaml
 
 
 ### interface IProduct {
-  id: string;          
-  title: string;       
-  description: string; 
-  image: string;       
-  category: string;    
-  price: number | null; 
+  id: string;          // Уникальный идентификатор товара
+  title: string;       // Название товара
+  description: string; // Подробное описание
+  image: string;       // Ссылка на изображение
+  category: string;    // Категория товара
+  price: number | null;// Цена (может быть null, если товар недоступен)
 }
+
 
 ### Покупатель
 
@@ -139,8 +140,11 @@ interface IOrderPayload {
   total: number;
 }
 ### Модели данных
-1. Каталог товаров (Products)
+
+
+### Каталог товаров (Products)
 Зона ответственности: хранение всех товаров и выбранного для подробного просмотра.
+
 
 ### Поля:
 
@@ -193,6 +197,22 @@ save(partial: Partial<IBuyer>): void
 clear(): void
 validate(): Record<string, string>
 isValid(): boolean
+
+
+### Класс ApiService
+
+Зона ответственности:
+Класс ApiService реализует прикладной уровень работы с API.
+Он наследуется от базового класса Api и предоставляет конкретные методы для взаимодействия с сервером интернет-магазина «Web-Larёk».
+
+### Описание
+
+ApiService служит для выполнения запросов к серверу и получения данных о товарах, а также для отправки заказов.
+Все запросы используют базовые URL-адреса API_URL и CDN_URL, определённые в файле constants.ts.
+
+### Конструктор
+
+constructor(baseUrl: string, cdnUrl: string)
 
 
 ## Пример объекта ошибок валидации:

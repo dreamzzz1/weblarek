@@ -1,6 +1,10 @@
-/* Константа для получения полного пути для сервера. Для выполнения запроса 
-необходимо к API_URL добавить только ендпоинт. */
-export const API_URL = `${import.meta.env.VITE_API_ORIGIN}/api/weblarek`; 
+/* Константа для получения полного пути для сервера. 
+Для выполнения запроса необходимо к API_URL добавить только эндпоинт. */
+export const API_URL = 'https://larek-api.nomoreparties.co/api/weblarek';
+
+
+
+
 
 /* Константа для формирования полного пути к изображениям карточек. 
 Для получения полной ссылки на картинку необходимо к CDN_URL добавить только название файла изображения,
@@ -16,7 +20,5 @@ export const categoryMap = {
   'другое': 'card__category_other',
 };
 
-export const settings = {
-
-};
+export const settings = {};
 
