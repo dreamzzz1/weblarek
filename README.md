@@ -18,29 +18,29 @@
 ## Установка и запуск
 Для установки и запуска проекта необходимо выполнить команды:
 
+```shell
 npm install
 npm run start
+```
 
 или
 
+```shell
 yarn
 yarn start
-
-shell
-
+```
 
 ## Сборка
 
+```shell
 npm run build
-
-
+```
 
 или
 
+```shell
 yarn build
-
-yaml
-
+```
 
 # Интернет-магазин «Web-Larёk»
 
@@ -50,8 +50,8 @@ yaml
 
 Код приложения разделен на слои согласно парадигме MVP (Model-View-Presenter), которая обеспечивает четкое разделение ответственности между классами слоев Model и View. Каждый слой несет свой смысл и ответственность:
 
-- **Model** — слой данных, отвечает за хранение и изменение данных.  
-- **View** — слой представления, отвечает за отображение данных на странице.  
+- **Model** — слой данных, отвечает за хранение и изменение данных.
+- **View** — слой представления, отвечает за отображение данных на странице.
 - **Presenter** — презентер содержит основную логику приложения и отвечает за связь представления и данных.
 
 Взаимодействие между классами обеспечивается использованием событийно-ориентированного подхода. Модели и Представления генерируют события при изменении данных или взаимодействии пользователя с приложением, а Презентер обрабатывает эти события, используя методы как Моделей, так и Представлений.
@@ -63,14 +63,14 @@ yaml
 #### Класс Component
 Является базовым классом для всех компонентов интерфейса. Класс является дженериком и принимает в переменной `T` тип данных, которые могут быть переданы в метод `render` для отображения.
 
-**Конструктор:**  
+**Конструктор:**
 `constructor(container: HTMLElement)` — принимает ссылку на DOM элемент за отображение, которого он отвечает.
 
-**Поля класса:**  
+**Поля класса:**
 - `container: HTMLElement` — поле для хранения корневого DOM элемента компонента.
 
-**Методы класса:**  
-- `render(data?: Partial<T>): HTMLElement` — отображает данные в компоненте.  
+**Методы класса:**
+- `render(data?: Partial<T>): HTMLElement` — отображает данные в компоненте.
 - `setImage(element: HTMLImageElement, src: string, alt?: string): void` — утилитарный метод для модификации изображений `<img>`.
 
 ---
@@ -78,16 +78,16 @@ yaml
 #### Класс Api
 Содержит базовую логику отправки запросов.
 
-**Конструктор:**  
+**Конструктор:**
 `constructor(baseUrl: string, options: RequestInit = {})` — базовый адрес сервера и опциональные заголовки.
 
 **Поля класса:**
-- `baseUrl: string` — базовый адрес сервера.  
+- `baseUrl: string` — базовый адрес сервера.
 - `options: RequestInit` — объект с заголовками для запросов.
 
 **Методы класса:**
-- `get(uri: string): Promise<object>` — выполняет GET-запрос.  
-- `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` — выполняет POST/PUT/DELETE-запрос.  
+- `get(uri: string): Promise<object>` — выполняет GET-запрос.
+- `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` — выполняет POST/PUT/DELETE-запрос.
 - `handleResponse(response: Response): Promise<object>` — проверяет корректность ответа сервера.
 
 ---
@@ -95,14 +95,15 @@ yaml
 #### Класс EventEmitter
 Реализует паттерн "Наблюдатель", позволяя подписываться на события и отправлять их.
 
-**Поля класса:**  
+**Поля класса:**
 - `_events: Map<string | RegExp, Set<Function>>` — хранит подписки на события.
 
-**Методы класса:**  
-- `on<T extends object>(event: EventName, callback: (data: T) => void): void` — подписка на событие.  
-- `emit<T extends object>(event: string, data?: T): void` — инициирование события.  
+**Методы класса:**
+- `on<T extends object>(event: EventName, callback: (data: T) => void): void` — подписка на событие.
+- `emit<T extends object>(event: string, data?: T): void` — инициирование события.
 - `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` — возвращает функцию для вызова события.
 
+---
 
 ## Данные
 
@@ -110,8 +111,8 @@ yaml
 
 ### Товар
 
-
-### interface IProduct {
+```typescript
+interface IProduct {
   id: string;          // Уникальный идентификатор товара
   title: string;       // Название товара
   description: string; // Подробное описание
@@ -119,10 +120,11 @@ yaml
   category: string;    // Категория товара
   price: number | null;// Цена (может быть null, если товар недоступен)
 }
-
+```
 
 ### Покупатель
 
+```typescript
 type TPayment = 'card' | 'cash';
 
 interface IBuyer {
@@ -131,93 +133,105 @@ interface IBuyer {
   phone: string;            // Телефон
   address: string;          // Адрес доставки
 }
+```
 
 ### Данные для отправки на сервер
 
+```typescript
 interface IOrderPayload {
   buyer: IBuyer;
   products: IProduct[];
   total: number;
 }
-### Модели данных
+```
 
+---
 
-### Каталог товаров (Products)
+## Модели данных
+
+#### Класс Products
 Зона ответственности: хранение всех товаров и выбранного для подробного просмотра.
 
+**Поля:**
+- `private items: IProduct[]` — все товары
+- `private selected: IProduct | null` — выбранный товар
 
-### Поля:
+**Методы:**
+- `setProducts(items: IProduct[]): void` — устанавливает список товаров
+- `getAll(): IProduct[]` — возвращает все товары
+- `getItemById(id: string): IProduct | null` — возвращает товар по ID
+- `setSelected(item: IProduct | null): void` — устанавливает выбранный товар
+- `getSelected(): IProduct | null` — возвращает выбранный товар
 
-private items: IProduct[] — все товары.
+---
 
-private selected: IProduct | null — выбранный товар.
-
-### Методы:
-
-setProducts(items: IProduct[]): void
-getAll(): IProduct[]
-getItemById(id: string): IProduct | null
-setSelected(item: IProduct | null): void
-getSelected(): IProduct | null
-
-2. Корзина (Cart)
+#### Класс Cart
 Зона ответственности: хранение товаров, выбранных для покупки.
 
-## Поля:
+**Поля:**
+- `private items: IProduct[]` — товары в корзине
 
-private items: IProduct[] — товары в корзине.
+**Методы:**
+- `addProduct(product: IProduct): void` — добавляет товар в корзину
+- `getAll(): IProduct[]` — возвращает все товары в корзине
+- `removeItem(productId: string): void` — удаляет товар из корзины по ID
+- `clear(): void` — очищает корзину
+- `getTotal(): number` — возвращает общую стоимость товаров в корзине
+- `getCount(): number` — возвращает количество товаров в корзине
+- `hasProduct(productId: string): boolean` — проверяет наличие товара в корзине
 
-## Методы:
+---
 
-addProduct(product: IProduct): void
-getAll(): IProduct[]
-removeItem(productId: string): void
-clear(): void
-getTotal(): number
-getCount(): number
-hasProduct(productId: string): boolean
-
-
-
-3. Данные покупателя (Buyer)
+#### Класс Buyer
 Зона ответственности: хранение данных пользователя при оформлении заказа.
 
-## Поля:
+**Поля:**
+- `private data: IBuyer` — объект с данными покупателя
 
-private data: IBuyer — объект с данными покупателя.
+**Методы:**
+- `setEmail(email: string): void` — устанавливает email покупателя
+- `setPhone(phone: string): void` — устанавливает телефон покупателя
+- `setAddress(address: string): void` — устанавливает адрес доставки
+- `setPayment(payment: TPayment): void` — устанавливает способ оплаты
+- `getBuyer(): IBuyer` — возвращает данные покупателя
+- `save(partial: Partial<IBuyer>): void` — сохраняет частичные данные покупателя
+- `clear(): void` — очищает данные покупателя
+- `validate(): Record<string, string>` — валидирует данные покупателя и возвращает объект с ошибками
+- `isValid(): boolean` — проверяет валидность данных покупателя
 
-## Методы:
+---
 
-setEmail(email: string): void
-setPhone(phone: string): void
-setAddress(address: string): void
-setPayment(payment: TPayment): void
-getBuyer(): IBuyer
-save(partial: Partial<IBuyer>): void
-clear(): void
-validate(): Record<string, string>
-isValid(): boolean
+#### Класс ApiService
+Зона ответственности: реализует прикладной уровень работы с API. Наследуется от базового класса Api и предоставляет конкретные методы для взаимодействия с сервером интернет-магазина «Web-Larёk».
 
+**Конструктор:**
+`constructor(baseUrl: string, cdnUrl: string)` — создает экземпляр ApiService с базовым URL API и CDN
 
-### Класс ApiService
+**Методы класса:**
+- `getProducts(): Promise<IProduct[]>` — получает список всех товаров с сервера
+- `getProductById(id: string): Promise<IProduct>` — получает информацию о конкретном товаре по ID
+- `createOrder(order: IOrderPayload): Promise<object>` — отправляет заказ на сервер для обработки
+- `getCdnUrl(path: string): string` — формирует полный URL для доступа к ресурсам CDN
 
-Зона ответственности:
-Класс ApiService реализует прикладной уровень работы с API.
-Он наследуется от базового класса Api и предоставляет конкретные методы для взаимодействия с сервером интернет-магазина «Web-Larёk».
+**Пример использования:**
 
-### Описание
+```typescript
+const apiService = new ApiService(API_URL, CDN_URL);
 
-ApiService служит для выполнения запросов к серверу и получения данных о товарах, а также для отправки заказов.
-Все запросы используют базовые URL-адреса API_URL и CDN_URL, определённые в файле constants.ts.
+// Получение товаров
+const products = await apiService.getProducts();
 
-### Конструктор
+// Отправка заказа
+const result = await apiService.createOrder(orderPayload);
+```
 
-constructor(baseUrl: string, cdnUrl: string)
-
+---
 
 ## Пример объекта ошибок валидации:
 
+```typescript
 {
   payment: 'Не выбран вид оплаты',
   email: 'Укажите емэйл'
 }
+```
