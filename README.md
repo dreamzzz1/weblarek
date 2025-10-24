@@ -205,24 +205,18 @@ interface IOrderPayload {
 Зона ответственности: реализует прикладной уровень работы с API. Наследуется от базового класса Api и предоставляет конкретные методы для взаимодействия с сервером интернет-магазина «Web-Larёk».
 
 **Конструктор:**
-`constructor(baseUrl: string, cdnUrl: string)` — создает экземпляр ApiService с базовым URL API и CDN
+`constructor(baseUrl: string, options: RequestInit = {})`
+Создаёт экземпляр ApiService с указанным базовым адресом API и дополнительными параметрами запроса (заголовками, типом контента и т.д.).
 
 **Методы класса:**
 - `getProducts(): Promise<IProduct[]>` — получает список всех товаров с сервера
-- `getProductById(id: string): Promise<IProduct>` — получает информацию о конкретном товаре по ID
-- `createOrder(order: IOrderPayload): Promise<object>` — отправляет заказ на сервер для обработки
-- `getCdnUrl(path: string): string` — формирует полный URL для доступа к ресурсам CDN
 
 **Пример использования:**
 
 ```typescript
-const apiService = new ApiService(API_URL, CDN_URL);
-
-// Получение товаров
 const products = await apiService.getProducts();
+console.log(products);
 
-// Отправка заказа
-const result = await apiService.createOrder(orderPayload);
 ```
 
 ---
