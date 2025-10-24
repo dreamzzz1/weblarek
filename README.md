@@ -210,12 +210,28 @@ interface IOrderPayload {
 
 **Методы класса:**
 - `getProducts(): Promise<IProduct[]>` — получает список всех товаров с сервера
+- `sendOrder(order: IOrderPayload): Promise<object>` - отправляет заказ на сервер для обработки
 
 **Пример использования:**
 
 ```typescript
+
+// Получение товаров
 const products = await apiService.getProducts();
 console.log(products);
+
+// Отправка заказа
+const orderResult = await apiService.sendOrder({
+  buyer: {
+    payment: 'card',
+    email: 'test@example.com', 
+    phone: '+79991234567',
+    address: 'Москва, ул. Примерная, 1'
+  },
+  products: products,
+  total: 1500
+});
+console.log(orderResult);
 
 ```
 
