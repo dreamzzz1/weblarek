@@ -37,3 +37,19 @@ export interface IOrderPayload {
 	products: IProduct[];
 	total: number;
 }
+export interface IErrors {
+  payment?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
+export interface IOrderRequest extends IBuyer {
+  total: number;
+  items: string[];
+}
+
+export interface IOrderResponse {
+  id: string;
+  total: number;
+}

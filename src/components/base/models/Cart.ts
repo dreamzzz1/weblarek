@@ -1,28 +1,38 @@
 // src/components/models/Cart.ts
 import type { IProduct } from '@/types';
+import { EventEmitter } from '../Events';
 
-export class Cart {
-  private items: IProduct[] = [];
+export class Cart extends EventEmitter {
+  protected  productsList: IProduct [] = [];
+
+  getProductsList(): IProduct [] {
+    return this.productsList;
+  }
 
   addProduct(product: IProduct): void {
-    if (!this.items.find(p => p.id === product.id)) {
-      this.items.push(product);
-    }
+    this.productsList.push(product);
+    this.emit('basket:changed');
   }
 
-  getAll(): IProduct[] {
-    return this.items.slice();
+  removeProduct(product: IProduct): void {
+    this.productsList = this.productsList.filter(p => p.id !== product.id);
+    this.emit('basket:changed');
   }
 
-  getTotal(): number {
-    return this.items.reduce((sum, p) => sum + (p.price ?? 0), 0);
+  clearCart(): void {
+    this.productsList = [];
+    this.emit('basket:changed');
   }
 
-  clear(): void {
-    this.items = [];
+  getTotalPrice(): number {
+    return this.productsList.reduce((sum, product) => sum + (product.price ?? 0), 0);
   }
 
-  hasProduct(productId: string): boolean {
-    return this.items.some(p => p.id === productId);
+  getTotalProducts(): number {
+    return this.productsList.length;
+  }
+
+  hasProduct(id: string): boolean {
+    return this.productsList.some(product => product.id === id);
   }
 }

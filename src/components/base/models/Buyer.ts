@@ -1,56 +1,117 @@
-import type { IBuyer, TPayment } from '@/types';
+import { IBuyer, TPayment, IErrors } from '@/types';
+import { EventEmitter } from '../Events';
 
-export class Buyer {
-  private data: IBuyer = {
-    payment: null,
-    email: '',
-    phone: '',
-    address: '',
-  };
+export class Buyer extends EventEmitter {
+  protected payment: TPayment | null = null;
+  protected email: string = '';
+  protected phone: string = '';
+  protected address: string = '';
 
-  setEmail(email: string) {
-    this.data.email = email.trim();
+  setBuyerData(data: Partial<IBuyer>): void {
+    if (data.payment !== undefined) {
+      this.payment = data.payment; // null
+    }
+    if (data.email !== undefined) {
+      this.email = data.email;
+    }
+    if (data.phone !== undefined) {
+      this.phone = data.phone;
+    }
+    if (data.address !== undefined) {
+      this.address = data.address;
+    }
+    this.validateBuyerData();
   }
 
-  setPhone(phone: string) {
-    this.data.phone = phone.trim();
+  setBuyerPayment(value: TPayment | null) {
+    this.payment = value;
+    this.validateBuyerData();
   }
 
-  setAddress(address: string) {
-    this.data.address = address.trim();
+  setBuyerEmail(value: string) {
+    this.email = value;
+    this.validateBuyerData();
   }
 
-  setPayment(payment: TPayment) {
-    this.data.payment = payment;
+  setBuyerPhone(value: string) {
+    this.phone = value;
+    this.validateBuyerData();
   }
 
-  getBuyer(): IBuyer {
-    return { ...this.data };
+  setBuyerAddress(value: string) {
+    this.address = value;
+    this.validateBuyerData();
   }
 
-  clear(): void {
-    this.data = {
-      payment: null,
-      email: '',
-      phone: '',
-      address: '',
+  getBuyerData(): IBuyer {
+    if (this.payment === null) {
+      throw new Error('Payment method is not selected');
+    }
+    return {
+      payment: this.payment,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
     };
   }
 
+  clear(): void {
+    this.payment = null;
+    this.email = '';
+    this.phone = '';
+    this.address = '';
+    this.validateBuyerData();
+  }
 
-  validate(): Record<string, string> {
-    const errors: Record<string, string> = {};
+  validateBuyerData(): void {
+    const errors: IErrors = {};
 
-    if (!this.data.email) errors.email = 'Укажите e-mail';
-    if (!this.data.phone) errors.phone = 'Укажите телефон';
-    if (!this.data.address) errors.address = 'Укажите адрес доставки';
-    if (!this.data.payment) errors.payment = 'Выберите способ оплаты';
+    if (!this.payment) {
+      errors.payment = 'Не выбран вид оплаты';
+    }
+
+    if (!this.email || this.email.trim() === '') {
+      errors.email = 'Укажите email';
+    }
+
+    if (!this.phone || this.phone.trim() === '') {
+      errors.phone = 'Укажите номер телефона';
+    }
+
+    if (!this.address || this.address.trim() === '') {
+      errors.address = 'Укажите адрес доставки';
+    }
+
+    this.emit('form:errors', errors);
+  }
+
+  validateOrder(): IErrors {
+    const errors: IErrors = {};
+
+    if (!this.payment) {
+      errors.payment = 'Не выбран вид оплаты';
+    }
+
+    if (!this.address || this.address.trim() === '') {
+      errors.address = 'Укажите адрес доставки';
+    }
 
     return errors;
   }
 
-  isValid(): boolean {
-    return Object.keys(this.validate()).length === 0;
+  validateContacts(): IErrors {
+    const errors: IErrors = {};
+
+    if (!this.email || this.email.trim() === '') {
+      errors.email = 'Укажите email';
+    }
+
+    if (!this.phone || this.phone.trim() === '') {
+      errors.phone = 'Укажите номер телефона';
+    }
+
+    return errors;
   }
 }
+
 

@@ -16,6 +16,7 @@ export abstract class Component<T> {
                 element.alt = alt;
             }
         }
+        
     }
 
     // Вернуть корневой DOM-элемент

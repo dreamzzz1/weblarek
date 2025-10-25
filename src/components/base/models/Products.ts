@@ -1,28 +1,29 @@
 // src/components/models/Products.ts
-import type { IProduct, IApiProductsResponse } from '@/types';
+import  { IProduct, IApiProductsResponse } from '@/types';
+import { EventEmitter } from '../Events';
 
+export class Catalog extends EventEmitter {
+  protected  productsList: IProduct [] = [];
+  protected  selectedProduct: IProduct | null = null;
 
-export class Products {
-  private items: IProduct[] = [];
-  private selected: IProduct | null = null;
-
-  setProducts(items: IProduct[]): void {
-    this.items = Array.isArray(items) ? items.slice() : [];
+  setProductsList(products: IProduct[]): void {
+    this.productsList = products;
+    this.emit('catalog:changed');
   }
 
-  getAll(): IProduct[] {
-    return this.items.slice();
+  getProductsList(): IProduct [] {
+    return this.productsList;
   }
 
-  getItemById(id: string): IProduct | null {
-    return this.items.find(i => i.id === id) ?? null;
+  getProductById(id: string): IProduct | null {
+    return this.productsList.find(product => product.id === id) || null;
   }
 
-  setSelected(item: IProduct | null): void {
-    this.selected = item;
+  selectProduct(product: IProduct): void {
+    this.selectedProduct = product;
   }
 
-  getSelected(): IProduct | null {
-    return this.selected;
+  getSelectedProduct(): IProduct | null {
+    return this.selectedProduct;
   }
 }
