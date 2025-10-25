@@ -115,24 +115,11 @@ function renderBasket() {
 }
 
 events.on('basket:open', () => {
-  console.log('=== ОТКРЫТИЕ КОРЗИНЫ ===');
-  console.log('Товары в корзине:', cartModel.getProductsList());
-  console.log('Общая цена:', cartModel.getTotalPrice());
-  
-  // Передаем общую сумму в prepareItems
-  basket.prepareItems(
-    cartModel.getProductsList(), 
-    events, 
-    cardBasketTempl, 
-    cartModel.getTotalPrice()
-  );
-  
-  const basketElement = basket.render();
-  console.log('Кнопка оформления в DOM:', basketElement.querySelector('.basket__button'));
-  
-  modal.content = basketElement;
+  renderBasket();
+  modal.content = basket.render();
   modal.open();
 });
+
 
 cartModel.on('basket:changed', () => {
   header.counter = cartModel.getTotalProducts();

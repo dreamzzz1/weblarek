@@ -20,11 +20,10 @@ export class ContactsForm extends Form<TContactsForm> {
     this.emailElement = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
     this.phoneElement = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
 
-    // Обработчик ввода email
     this.emailElement.addEventListener('input', () => {
       this.events.emit('order:change', { field: 'email', value: this.emailElement.value });
     });
-    
+
     this.phoneElement.addEventListener('input', () => {
       this.events.emit('order:change', { field: 'phone', value: this.phoneElement.value });
     });
@@ -35,10 +34,6 @@ export class ContactsForm extends Form<TContactsForm> {
       e.preventDefault();
       if (this.nextButton.disabled) return;
       this.events.emit('contacts:submit');
-    });
-
-    this.events.on('form:errors', (errors: IErrors) => {
-      this.validateForm(errors);
     });
   }
 
@@ -52,15 +47,10 @@ export class ContactsForm extends Form<TContactsForm> {
 
   validateForm(errors: IErrors): void {
     const contactErrors = [errors.email, errors.phone].filter(Boolean);
-    
     this.isButtonValid = contactErrors.length === 0;
-    
-    if (contactErrors.length > 0) {
-      this.errors = contactErrors.join(', ');
-    } else {
-      this.errors = '';
-    }
+    this.errors = contactErrors.join(', ');
   }
 }
+
 
 
